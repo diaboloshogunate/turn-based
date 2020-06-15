@@ -362,8 +362,10 @@
             <e p="UnitSwap.cs" t="Include" />
           </e>
           <e p="Unit" t="Include">
+            <e p="Attack.cs" t="Include" />
             <e p="Element.cs" t="Include" />
             <e p="Health.cs" t="Include" />
+            <e p="Movement.cs" t="Include" />
             <e p="Unit.cs" t="Include" />
           </e>
         </e>

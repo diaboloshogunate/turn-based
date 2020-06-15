@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour
         this.player1.SpawnUnits();
         this.player2.SpawnUnits();
         this.currentPlayer = this.player1;
-        this.currentPlayer.BeginTurn();
     }
 
     public void AddUnit(PlayerController player, Unit unit)
@@ -134,7 +133,7 @@ public class GameManager : MonoBehaviour
                 if (this.selectedUnit && this.selectedUnit != unit)
                 {
                     this.selectedUnit.Deselect();
-                    if(this.selectedUnit.HasMoved())
+                    if(this.selectedUnit.GetMovement().CanMove())
                         this.selectedUnit.Rest();
                 }
                 else if (this.selectedUnit && this.selectedUnit == unit) 
@@ -151,14 +150,14 @@ public class GameManager : MonoBehaviour
             return;
         
         // attack
-        if (!this.selectedUnit.HasAttacked())
+        if (!this.selectedUnit.GetAttack().HasAttacked())
         {
             foreach (Collider2D collision in collisions)
             {
                 Unit unit = collision.GetComponent<Unit>();
                 if (unit.IsPlayer(this.GetOtherPlayer(this.currentPlayer)))
                 {
-                    this.selectedUnit.Attack(unit);
+                    this.selectedUnit.GetAttack().AttackUnit(unit);
                     this.AutoTurnEnd();
                     return;
                 }
@@ -166,9 +165,9 @@ public class GameManager : MonoBehaviour
         }
         
         // move
-        if (!this.selectedUnit.HasMoved())
+        if (!this.selectedUnit.GetMovement().CanMove())
         {
-            this.selectedUnit.MoveTo(this.mousePosition);
+            this.selectedUnit.GetMovement().MoveTo(new Vector3(Mathf.RoundToInt(this.mousePosition.x), Mathf.RoundToInt(this.mousePosition.y), 0));
             return;
         }
         
@@ -181,7 +180,7 @@ public class GameManager : MonoBehaviour
 
     private void AutoTurnEnd()
     {
-        if (!this.GetPlayerUnits(this.currentPlayer).Find(x => !x.HasMoved()))
+        if (!this.GetPlayerUnits(this.currentPlayer).Find(x => !x.GetMovement().CanMove()))
             this.EndTurn();
     }
 
