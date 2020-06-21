@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
         this.spawnPoints.ForEach((Transform t) => {
             GameObject obj = Instantiate(this.GetRandomUnit(), t.position, Quaternion.identity);
             Unit unit = obj.GetComponent<Unit>();
-            unit.SetPlayer(this);
+            unit.PlayerController = this;
             GameManager.GetInstance().AddUnit(this, unit);
         });
     }

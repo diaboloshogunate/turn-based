@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 52042067507343920, guid: 640103956dbf95244bb7069f87d846b4,
         type: 3}
       propertyPath: m_Name
-      value: AttackTile
+      value: AttackTile Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4130436099639971448, guid: 640103956dbf95244bb7069f87d846b4,
         type: 3}
@@ -77,5 +77,21 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6997817876129183529, guid: 640103956dbf95244bb7069f87d846b4,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997817876129183529, guid: 640103956dbf95244bb7069f87d846b4,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997817876129183529, guid: 640103956dbf95244bb7069f87d846b4,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 55f567bf2012935448823ff8382f35f5,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 640103956dbf95244bb7069f87d846b4, type: 3}

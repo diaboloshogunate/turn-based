@@ -352,6 +352,7 @@
         </e>
         <e p="Scripts" t="Include">
           <e p="GameManager.cs" t="Include" />
+          <e p="MouseManager.cs" t="Include" />
           <e p="PlayerActions.cs" t="Include" />
           <e p="PlayerController.cs" t="Include" />
           <e p="Time" t="Include">
@@ -362,6 +363,7 @@
             <e p="UnitSwap.cs" t="Include" />
           </e>
           <e p="Unit" t="Include">
+            <e p="ActionMenu.cs" t="Include" />
             <e p="Attack.cs" t="Include" />
             <e p="Element.cs" t="Include" />
             <e p="Health.cs" t="Include" />

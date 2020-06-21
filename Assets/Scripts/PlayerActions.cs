@@ -20,9 +20,9 @@ public class @Actions : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Primary"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""a075d44a-a3a6-4163-9f8d-c433673dcc41"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -39,6 +39,14 @@ public class @Actions : IInputActionCollection, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""b8f50e06-4c73-435c-93b9-eb35d264de6c"",
                     ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Secondary"",
+                    ""type"": ""Button"",
+                    ""id"": ""115a506e-ad18-4568-8be6-e1218204c88a"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -74,6 +82,17 @@ public class @Actions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Cursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""93ab54d5-9ecd-476c-9b9d-78b903412e09"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Secondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -654,6 +673,7 @@ public class @Actions : IInputActionCollection, IDisposable
         m_Player_Primary = m_Player.FindAction("Primary", throwIfNotFound: true);
         m_Player_Exit = m_Player.FindAction("Exit", throwIfNotFound: true);
         m_Player_Cursor = m_Player.FindAction("Cursor", throwIfNotFound: true);
+        m_Player_Secondary = m_Player.FindAction("Secondary", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -718,6 +738,7 @@ public class @Actions : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Primary;
     private readonly InputAction m_Player_Exit;
     private readonly InputAction m_Player_Cursor;
+    private readonly InputAction m_Player_Secondary;
     public struct PlayerActions
     {
         private @Actions m_Wrapper;
@@ -725,6 +746,7 @@ public class @Actions : IInputActionCollection, IDisposable
         public InputAction @Primary => m_Wrapper.m_Player_Primary;
         public InputAction @Exit => m_Wrapper.m_Player_Exit;
         public InputAction @Cursor => m_Wrapper.m_Player_Cursor;
+        public InputAction @Secondary => m_Wrapper.m_Player_Secondary;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -743,6 +765,9 @@ public class @Actions : IInputActionCollection, IDisposable
                 @Cursor.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursor;
                 @Cursor.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursor;
                 @Cursor.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursor;
+                @Secondary.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondary;
+                @Secondary.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondary;
+                @Secondary.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondary;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -756,6 +781,9 @@ public class @Actions : IInputActionCollection, IDisposable
                 @Cursor.started += instance.OnCursor;
                 @Cursor.performed += instance.OnCursor;
                 @Cursor.canceled += instance.OnCursor;
+                @Secondary.started += instance.OnSecondary;
+                @Secondary.performed += instance.OnSecondary;
+                @Secondary.canceled += instance.OnSecondary;
             }
         }
     }
@@ -915,6 +943,7 @@ public class @Actions : IInputActionCollection, IDisposable
         void OnPrimary(InputAction.CallbackContext context);
         void OnExit(InputAction.CallbackContext context);
         void OnCursor(InputAction.CallbackContext context);
+        void OnSecondary(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

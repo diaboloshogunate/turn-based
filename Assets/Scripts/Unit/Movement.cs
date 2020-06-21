@@ -9,23 +9,21 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb = null;
     [SerializeField] private float speed = 2f;
     [SerializeField] private float distance = 4f;
-    [SerializeField] private GameObject walkTile;
-    private List<GameObject> movementTiles = new List<GameObject>();
-    private bool hasMoved = false;
+    public bool HasMoved { get; private set; }= false;
     private int currentWaypoint = 0;
+    private Unit attacking = null;
+    private int stopShort = 0;
     private Path path = null;
     [SerializeField] private Seeker seeker = null;
-    private Attack attack = null;
-
-    public bool CanMove() { return this.hasMoved; }
+    private Unit unit = null;
 
     public int GetDistance() { return (int) this.distance; }
-    public void Refresh() { this.hasMoved = false; }
+    public void Refresh() { this.HasMoved = false; }
     
     private void Start()
     {
+        this.unit = GetComponent<Unit>();
         this.rb = GetComponent<Rigidbody2D>();
-        this.attack = GetComponent<Attack>();
         this.UpdateGraphs();
     }
     
@@ -38,10 +36,21 @@ public class Movement : MonoBehaviour
 
         if (this.currentWaypoint >= this.path.vectorPath.Count)
         {
+            this.gameObject.layer = LayerMask.NameToLayer("Unit");
+            AstarPath.active.UpdateGraphs (new GraphUpdateObject(this.GetComponent<BoxCollider2D>().bounds));
+            if (this.attacking)
+            {
+                this.unit.Attack.AttackUnit(this.attacking);
+                if (this.stopShort > 0)
+                {
+                    this.attacking.gameObject.layer = LayerMask.NameToLayer("Unit");
+                    AstarPath.active.UpdateGraphs(new GraphUpdateObject(this.attacking.gameObject.GetComponent<BoxCollider2D>().bounds));
+                }
+            } 
+            else this.unit.Rest();
             this.UpdateGraphs();
             this.rb.velocity = Vector2.zero;
             this.path = null;
-            StartCoroutine(this.attack.AttackPath());
             return;
         }
 
@@ -58,44 +67,45 @@ public class Movement : MonoBehaviour
     {
         AstarPath.active.Scan();
     }
-
-    public IEnumerator WalkPath()
-    {
-        int maxGScore = (this.GetDistance() + 1) * 1000;
-        ConstantPath constPath = ConstantPath.Construct(this.transform.position, maxGScore, null);
-        this.seeker.StartPath(constPath);
-        yield return StartCoroutine(constPath.WaitForPath());
-        List<GraphNode> nodes = constPath.allNodes;
-        for (int i = nodes.Count - 1; i >= 0; i--)
-        {
-            Vector3 pos = (Vector3) nodes[i].position;
-            GameObject tile =Instantiate(this.walkTile, pos, Quaternion.identity, this.transform);
-            this.movementTiles.Add(tile);
-        }
-    }
-    
-    public void RemoveWalkTiles() { this.movementTiles.ForEach(o => Destroy(o)); }
     
     public void MoveTo(Vector3 target)
     {
+        this.attacking = null;
+        this.stopShort = 0;
+        this.gameObject.layer = LayerMask.NameToLayer("SelectedUnit");
+        AstarPath.active.UpdateGraphs (new GraphUpdateObject(this.GetComponent<BoxCollider2D>().bounds));
+        seeker.StartPath(this.transform.position, target, OnFinishPathCalculation);
+    }
+
+    public void MoveThenAttack(Vector3 target, Unit unit, int stopShort = 0)
+    {
+        this.attacking = unit;
+        this.stopShort = stopShort;
+        this.gameObject.layer = LayerMask.NameToLayer("SelectedUnit");
+        AstarPath.active.UpdateGraphs (new GraphUpdateObject(this.GetComponent<BoxCollider2D>().bounds));
+        if (stopShort > 0)
+        {
+            unit.gameObject.layer = LayerMask.NameToLayer("SelectedUnit");
+            AstarPath.active.UpdateGraphs (new GraphUpdateObject(unit.gameObject.GetComponent<BoxCollider2D>().bounds));
+        }
         seeker.StartPath(this.transform.position, target, OnFinishPathCalculation);
     }
     
     private void OnFinishPathCalculation(Path p)
     {
+        this.unit.Deselect();
+        
         if (p.error)
         {
             Debug.LogError(p.error.ToString());
             return;
         }
 
-        Debug.Log(p.GetTotalLength());
-        if (p.GetTotalLength() <= this.distance + 0.2f)// sometimes the distance is off by 0.1
-        {
-            this.hasMoved = true;
-            this.path = p;
-            this.currentWaypoint = 0;
-            this.RemoveWalkTiles();
-        }
+        this.HasMoved = true;
+        this.path = p;
+        this.currentWaypoint = 0;
+
+        if (this.stopShort > 0)
+            this.path.vectorPath.RemoveRange(this.path.vectorPath.Count - this.stopShort, this.stopShort);
     }
 }

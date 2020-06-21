@@ -10,17 +10,11 @@ public class GameManager : MonoBehaviour
 
     [Header("Special Objects")] [SerializeField]
     private TimeChamber timeChamber = null;
-    
-    [Header("Select")]
-    [SerializeField] private GameObject cursor = null;
-    [SerializeField] private LayerMask cursorCollisions = 0;
-    private Vector2 mousePosition = Vector2.zero;
-    private Unit selectedUnit = null;
-    
+
     [Header("Players")]
     [SerializeField] private PlayerController player1 = null;
     [SerializeField] private PlayerController player2 = null;
-    private PlayerController currentPlayer = null;
+    public PlayerController Player { get; private set; } = null;
     private List<Unit> player1Units = new List<Unit>();
     private List<Unit> player2Units = new List<Unit>();
 
@@ -53,16 +47,12 @@ public class GameManager : MonoBehaviour
 
     private void RegisterInput()
     {
-        this.actions.Player.Cursor.performed += this.Cursor;
-        this.actions.Player.Primary.performed += this.Primary;
         this.actions.Player.Exit.performed += this.Exit;
         this.actions.Player.Enable();
     }
     
     private void UnregisterInput()
     {
-        this.actions.Player.Cursor.performed -= this.Cursor;
-        this.actions.Player.Primary.performed -= this.Primary;
         this.actions.Player.Exit.performed -= this.Exit;
         this.actions.Player.Disable();
     }
@@ -71,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         this.player1.SpawnUnits();
         this.player2.SpawnUnits();
-        this.currentPlayer = this.player1;
+        this.Player = this.player1;
     }
 
     public void AddUnit(PlayerController player, Unit unit)
@@ -114,81 +104,17 @@ public class GameManager : MonoBehaviour
         return this.player1 == player ? this.player1Units : this.player2Units;
     }
 
-    private void Cursor(InputAction.CallbackContext context)
+    public void AutoTurnEnd()
     {
-        this.mousePosition = Camera.main.ScreenToWorldPoint(context.ReadValue<Vector2>());
-        Vector3 position = this.mousePosition;
-        this.cursor.transform.position = new Vector3(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y), 0);
-    }
-    
-    private void Primary(InputAction.CallbackContext context)
-    {
-        // select unit
-        Collider2D[] collisions = Physics2D.OverlapPointAll(this.cursor.transform.position, this.cursorCollisions);
-        foreach (Collider2D collision in collisions)
-        {
-            Unit unit = collision.GetComponent<Unit>();
-            if (unit.IsSelectable(this.currentPlayer))
-            {
-                if (this.selectedUnit && this.selectedUnit != unit)
-                {
-                    this.selectedUnit.Deselect();
-                    if(this.selectedUnit.GetMovement().CanMove())
-                        this.selectedUnit.Rest();
-                }
-                else if (this.selectedUnit && this.selectedUnit == unit) 
-                    this.selectedUnit.Rest();
-                
-                this.selectedUnit = unit;
-                this.selectedUnit.Select();
-                return;
-            }
-        }
-        
-        // nothing selected
-        if (!this.selectedUnit)
-            return;
-        
-        // attack
-        if (!this.selectedUnit.GetAttack().HasAttacked())
-        {
-            foreach (Collider2D collision in collisions)
-            {
-                Unit unit = collision.GetComponent<Unit>();
-                if (unit.IsPlayer(this.GetOtherPlayer(this.currentPlayer)))
-                {
-                    this.selectedUnit.GetAttack().AttackUnit(unit);
-                    this.AutoTurnEnd();
-                    return;
-                }
-            }
-        }
-        
-        // move
-        if (!this.selectedUnit.GetMovement().CanMove())
-        {
-            this.selectedUnit.GetMovement().MoveTo(new Vector3(Mathf.RoundToInt(this.mousePosition.x), Mathf.RoundToInt(this.mousePosition.y), 0));
-            return;
-        }
-        
-        // wait
-        this.selectedUnit.Deselect();
-        this.selectedUnit.Rest();
-        this.selectedUnit = null;
-        this.AutoTurnEnd();
-    }
-
-    private void AutoTurnEnd()
-    {
-        if (!this.GetPlayerUnits(this.currentPlayer).Find(x => !x.GetMovement().CanMove()))
+        if (!this.GetPlayerUnits(this.Player).Find(x => x.Rested))
             this.EndTurn();
     }
 
     public void EndTurn()
     {
-        this.currentPlayer.EndTurn();
-        this.currentPlayer = this.GetOtherPlayer(this.currentPlayer);
-        this.currentPlayer.BeginTurn();
+        this.Player.EndTurn();
+        this.Player = this.GetOtherPlayer(this.Player);
+        this.Player.BeginTurn();
         this.timeChamber.BeginTurn();
     }
     

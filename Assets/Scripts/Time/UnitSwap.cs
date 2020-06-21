@@ -17,7 +17,7 @@ public class UnitSwap : TimeSwap
     private void Start()
     {
         this.element = GetComponent<Element>();
-        this.isPlayer1 = GameManager.GetInstance().IsPlayer1(GetComponent<Unit>().GetPlayer());
+        this.isPlayer1 = GameManager.GetInstance().IsPlayer1(GetComponent<Unit>().PlayerController);
         if (this.isPlayer1)
         {
             this.magicPlayer1.SetActive(true);

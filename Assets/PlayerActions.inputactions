@@ -7,9 +7,9 @@
             "actions": [
                 {
                     "name": "Primary",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "a075d44a-a3a6-4163-9f8d-c433673dcc41",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
@@ -26,6 +26,14 @@
                     "type": "Value",
                     "id": "b8f50e06-4c73-435c-93b9-eb35d264de6c",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Secondary",
+                    "type": "Button",
+                    "id": "115a506e-ad18-4568-8be6-e1218204c88a",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -61,6 +69,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Cursor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93ab54d5-9ecd-476c-9b9d-78b903412e09",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
