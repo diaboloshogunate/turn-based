@@ -13,7 +13,7 @@ public class Health : MonoBehaviour
 
     private void UpdateHealth()
     {
-        this.healthBar.fillAmount = Mathf.Clamp01(this.currentHealth / this.maxHealth);
+        this.healthBar.fillAmount = this.GetHealthNormal();
     }
 
     public void Damage(float dmg)
@@ -22,5 +22,10 @@ public class Health : MonoBehaviour
         this.UpdateHealth();
         if (this.currentHealth <= 0)
             this.death.Invoke();
+    }
+
+    public float GetHealthNormal()
+    {
+        return Mathf.Clamp01(this.currentHealth / this.maxHealth);
     }
 }

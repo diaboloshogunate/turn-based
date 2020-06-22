@@ -42,13 +42,19 @@ public class MouseManager : MonoBehaviour
     
     void Update()
     {
-        if (this.Locked) return;
         this.WorldPosition = Camera.main.ScreenToWorldPoint(this.ScreenPosition); 
-        this.TilePosition = new Vector3(Mathf.RoundToInt(this.WorldPosition.x), Mathf.RoundToInt(this.WorldPosition.y), 0);
         Vector3 targetPosition = this.WorldPosition;
         targetPosition.z = 0;
         this.cameraTarget.transform.position = targetPosition;
+        
+        if (this.Locked) return;
+        this.TilePosition = new Vector3(Mathf.RoundToInt(this.WorldPosition.x), Mathf.RoundToInt(this.WorldPosition.y), 0);
         this.cursor.transform.position = this.TilePosition;
+
+        List<Collider2D> collisions = GetCollisions();
+        Collider2D collision = collisions.Find(o => o.GetComponent<Unit>());
+        if (collision) UnitDetails.Instance.Show(collision.GetComponent<Unit>());
+        else UnitDetails.Instance.Hide();
     }
 
     private void RegisterInput()

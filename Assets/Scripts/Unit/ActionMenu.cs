@@ -20,15 +20,18 @@ public class ActionMenu : MonoBehaviour
         this.endTurnButton.SetActive(endturn);
         this.cancelButton.SetActive(cancel);
 
+        Vector3 offset = MouseManager.Instance.TilePosition;
+        offset.x += 2;
+        offset.y += 1.5f;
         float shownButtons = 0;
         if (attack)
-            this.attackButton.transform.localPosition = new Vector3(0, shownButtons++ * -this.offsetY, 0);
+            this.attackButton.transform.position = new Vector3(offset.x, offset.y + shownButtons++ * -this.offsetY, 0);
         if (wait)
-            this.waitButton.transform.localPosition = new Vector3(0, shownButtons++ * -this.offsetY, 0);
+            this.waitButton.transform.position = new Vector3(offset.x, offset.y + shownButtons++ * -this.offsetY, 0);
         if (endturn)
-            this.endTurnButton.transform.localPosition = new Vector3(0, shownButtons++ * -this.offsetY, 0);
+            this.endTurnButton.transform.position = new Vector3(offset.x, offset.y + shownButtons++ * -this.offsetY, 0);
         if (cancel)
-            this.cancelButton.transform.localPosition = new Vector3(0, shownButtons++ * -this.offsetY, 0);
+            this.cancelButton.transform.position = new Vector3(offset.x, offset.y + shownButtons++ * -this.offsetY, 0);
     }
 
     public void Hide()

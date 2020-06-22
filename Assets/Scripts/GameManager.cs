@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,8 +9,9 @@ public class GameManager : MonoBehaviour
     private static GameManager instance = null;
     private Actions actions = null;
 
-    [Header("Special Objects")] [SerializeField]
-    private TimeChamber timeChamber = null;
+    [Header("Special Objects")] 
+    [SerializeField] private TimeChamber timeChamber = null;
+    [SerializeField] private TMP_Text playerTurnText = null;
 
     [Header("Players")]
     [SerializeField] private PlayerController player1 = null;
@@ -62,6 +64,7 @@ public class GameManager : MonoBehaviour
         this.player1.SpawnUnits();
         this.player2.SpawnUnits();
         this.Player = this.player1;
+        this.playerTurnText.text = "Player 1";
     }
 
     public void AddUnit(PlayerController player, Unit unit)
@@ -106,7 +109,7 @@ public class GameManager : MonoBehaviour
 
     public void AutoTurnEnd()
     {
-        if (!this.GetPlayerUnits(this.Player).Find(x => x.Rested))
+        if (!this.GetPlayerUnits(this.Player).Find(x => !x.Rested))
             this.EndTurn();
     }
 
@@ -116,6 +119,7 @@ public class GameManager : MonoBehaviour
         this.Player = this.GetOtherPlayer(this.Player);
         this.Player.BeginTurn();
         this.timeChamber.BeginTurn();
+        this.playerTurnText.text = this.IsPlayer1(this.Player) ? "PLAYER 1" : "PLAYER 2";
     }
     
     private void Exit(InputAction.CallbackContext context)

@@ -369,6 +369,7 @@
             <e p="Health.cs" t="Include" />
             <e p="Movement.cs" t="Include" />
             <e p="Unit.cs" t="Include" />
+            <e p="UnitDetails.cs" t="Include" />
           </e>
         </e>
       </e>

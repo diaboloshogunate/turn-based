@@ -65,4 +65,13 @@ public class UnitSwap : TimeSwap
         else if (currentElement == Element.ELEMENT.ELECTRC)
             this.element.SetElement(Element.ELEMENT.GRASS);
     }
+
+    public Sprite GetCurrentSprite()
+    {
+        if (this.magicPlayer1.activeSelf) return this.magicPlayer1.GetComponent<SpriteRenderer>().sprite;
+        if (this.techPlayer1.activeSelf) return this.techPlayer1.GetComponent<SpriteRenderer>().sprite;
+        if (this.techPlayer1.activeSelf) return this.techPlayer1.GetComponent<SpriteRenderer>().sprite;
+        if (this.magicPlayer2.activeSelf) return this.magicPlayer2.GetComponent<SpriteRenderer>().sprite;
+        return this.techPlayer2.GetComponent<SpriteRenderer>().sprite;
+    }
 }

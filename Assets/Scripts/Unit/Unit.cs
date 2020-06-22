@@ -65,7 +65,6 @@ public class Unit : MonoBehaviour
     {
         this.menu.Hide();
         this.isSelectingTarget = false;
-        MouseManager.Instance.Locked = false;
         this.ClearTiles();
         MouseManager.Instance.ClearSelected();
     }
@@ -191,7 +190,7 @@ public class Unit : MonoBehaviour
             if (this.walkTiles.ContainsKey(position))
             {
                 this.HideTiles();
-                this.menu.Show(this.HasAdjacentAttackTiles(position), true, true, false);
+                this.menu.Show(this.HasAdjacentAttackTiles(position), true, true, true);
             }
             else if (this.attackTiles.ContainsKey(position))
             {
@@ -252,11 +251,17 @@ public class Unit : MonoBehaviour
         this.Movement.MoveTo(MouseManager.Instance.TilePosition);
     }
 
+    public void OnEndTurnButton()
+    {
+        this.OnWaitButton();
+        GameManager.GetInstance().EndTurn();
+    }
+
     public void Rest()
     {
         this.Deselect();
-        GameManager.GetInstance().AutoTurnEnd();
         this.Rested = true;
+        GameManager.GetInstance().AutoTurnEnd();
         foreach (SpriteRenderer sprite in GetComponentsInChildren<SpriteRenderer>())
             sprite.color = this.usedColor;
     }

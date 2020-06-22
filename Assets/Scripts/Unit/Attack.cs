@@ -14,10 +14,8 @@ public class Attack : MonoBehaviour
     [SerializeField] private Seeker seeker;
     private Element element;
 
-    public int GetRange()
-    {
-        return this.range;
-    }
+    public int GetRange() { return this.range; }
+    public float GetAttack() { return this.attack; }
     
     private void Start()
     {
