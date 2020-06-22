@@ -5,7 +5,7 @@ using UnityEngine;
 public class Element : MonoBehaviour
 {
     [SerializeField] private ELEMENT element;
-    public enum ELEMENT {FIRE, WATER, GRASS, PLASMA, ICE, ELECTRC}
+    public enum ELEMENT {FIRE, WATER, GRASS, PLASMA, ICE, ELECTRC, VOID, NULL}
     
     public ELEMENT GetElement()
     {
@@ -19,12 +19,12 @@ public class Element : MonoBehaviour
 
     public bool IsMagicElement()
     {
-        return this.element == ELEMENT.FIRE || this.element == ELEMENT.WATER || this.element == ELEMENT.GRASS;
+        return this.element == ELEMENT.FIRE || this.element == ELEMENT.WATER || this.element == ELEMENT.GRASS || this.element == ELEMENT.VOID;
     }
 
     public bool IsTechElement()
     {
-        return this.element == ELEMENT.PLASMA || this.element == ELEMENT.ICE || this.element == ELEMENT.ELECTRC;
+        return this.element == ELEMENT.PLASMA || this.element == ELEMENT.ICE || this.element == ELEMENT.ELECTRC || this.element == ELEMENT.NULL;
     }
     
     public bool IsStrongAgainst(ELEMENT atk, ELEMENT def)

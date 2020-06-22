@@ -32,7 +32,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private GameObject attackTile = null;
     [SerializeField] public Seeker WalkSeeker = null;
     [SerializeField] public Seeker AttackSeeker = null;
-    [SerializeField] private LayerMask mask;
+    [SerializeField] private LayerMask mask = 0;
     private Dictionary<Vector2, GameObject> walkTiles = new Dictionary<Vector2, GameObject>();
     private Dictionary<Vector2, GameObject> attackTiles = new Dictionary<Vector2, GameObject>();
 
@@ -132,19 +132,48 @@ public class Unit : MonoBehaviour
         }
     }
 
+    private List<Vector2> GetAdjacentTilesInRange(Vector2 position, int current, int max)
+    {
+        List<Vector2> tilePositions = new List<Vector2>();
+        
+        tilePositions.Add(position);
+        if(current == max) return tilePositions;
+
+        tilePositions = tilePositions
+            .Concat(this.GetAdjacentTilesInRange(position + Vector2.up, current + 1, max))
+            .Concat(this.GetAdjacentTilesInRange(position + Vector2.right, current + 1, max))
+            .Concat(this.GetAdjacentTilesInRange(position + Vector2.down, current + 1, max))
+            .Concat(this.GetAdjacentTilesInRange(position + Vector2.left, current + 1, max))
+            .ToList();
+
+        return tilePositions.Distinct().ToList();
+    }
+    
     public bool HasAdjacentAttackTiles(Vector2 position)
     {
-        foreach(Vector2 direction in new []{Vector2.up, Vector2.right, Vector2.down, Vector2.left})
-            if (this.attackTiles.ContainsKey(position + direction) && Physics2D.OverlapCircleAll(position + direction, 0.8f, this.mask).Length > 0)
-                return true;
-        return false;
+        List<Vector2> tilePositions = this.GetAdjacentTilesInRange(position, 0, this.Attack.GetRange());
+        return tilePositions.Any(pos =>
+        {
+            if(pos == position || !this.attackTiles.ContainsKey(pos)) return false;
+            Collider2D colliders = Physics2D.OverlapCircle(pos, 0.5f, this.mask);
+            if (!colliders) return false;
+            Unit unit = colliders.gameObject.GetComponent<Unit>();
+            if (!unit || unit.IsPlayer(this.PlayerController)) return false;
+            return true;
+        });
     }
     
     public void DisplayAdjacentAttackTiles(Vector2 position)
     {
-        foreach(Vector2 direction in new []{Vector2.up, Vector2.right, Vector2.down, Vector2.left})
-            if(this.attackTiles.ContainsKey(position + direction) && Physics2D.OverlapCircleAll(position + direction, 0.8f, this.mask).Length > 0)
-                this.attackTiles[position + direction].SetActive(true);
+        List<Vector2> tilePositions = this.GetAdjacentTilesInRange(position, 0, this.Attack.GetRange());
+        tilePositions.ForEach(pos =>
+        {
+            if (pos != position && Physics2D.OverlapCircleAll(pos, 0.5f, this.mask).Length > 0)
+            {
+                if(!this.attackTiles.ContainsKey(pos)) this.attackTiles.Add(pos, Instantiate(this.attackTile, pos, Quaternion.identity, this.transform));
+                this.attackTiles[pos].SetActive(true);
+            }
+        });
     }
 
     public void ClearTiles()
@@ -174,7 +203,7 @@ public class Unit : MonoBehaviour
             if (collisions.Count > 0)
             {
                 Unit unit = collisions.Find(o => o.GetComponent<Unit>()).GetComponent<Unit>();
-                if (unit)
+                if (unit && !unit.IsPlayer(this.PlayerController))
                 {
                     this.HideTiles();
                     MouseManager.Instance.Locked = true;
@@ -198,8 +227,12 @@ public class Unit : MonoBehaviour
                 if (collision)
                 {
                     this.target = collision.GetComponent<Unit>();
-                    this.HideTiles();
-                    this.menu.Show(true, false, true, false);
+                    if (!this.target.IsPlayer(this.PlayerController))
+                    {
+                        this.HideTiles();
+                        this.menu.Show(true, false, true, false);
+                    }
+                    else this.target = null;
                 }
             }
             else

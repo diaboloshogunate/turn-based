@@ -64,6 +64,11 @@ public class UnitSwap : TimeSwap
             this.element.SetElement(Element.ELEMENT.WATER);
         else if (currentElement == Element.ELEMENT.ELECTRC)
             this.element.SetElement(Element.ELEMENT.GRASS);
+        else if (currentElement == Element.ELEMENT.VOID)
+            this.element.SetElement(Element.ELEMENT.NULL);
+        else if (currentElement == Element.ELEMENT.NULL)
+            this.element.SetElement(Element.ELEMENT.VOID);
+        
     }
 
     public Sprite GetCurrentSprite()

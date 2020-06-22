@@ -91,17 +91,17 @@ public class Menu : MonoBehaviour
 
     public void SetMasterVolume(float volume)
     {
-        this.master.SetFloat("MasterVolume", Mathf.Clamp(volume - 100f, -20f, 100f));
+        this.master.SetFloat("MasterVolume", Mathf.Clamp(volume - 80f, -80f, 20f));
     }
 
     public void SetMusicVolume(float volume)
     {
-        this.master.SetFloat("MusicVolume", Mathf.Clamp(volume - 100f, -20f, 100f));
+        this.master.SetFloat("MusicVolume", Mathf.Clamp(volume - 80f, -80f, 20f));
     }
 
     public void SetSFXVolume(float volume)
     {
-        this.master.SetFloat("SFXVolume", Mathf.Clamp(volume - 100f, -20f, 100f));
+        this.master.SetFloat("SFXVolume", Mathf.Clamp(volume - 80f, -80f, 20f));
     }
 
     public void SetQuality(int quality)

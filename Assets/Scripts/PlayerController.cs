@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private List<Transform> spawnPoints;
+    [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
     [SerializeField] private GameObject[] spawnableUnits = null;
 
     public void SpawnUnits()

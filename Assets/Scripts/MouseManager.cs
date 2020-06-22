@@ -10,7 +10,7 @@ public class MouseManager : MonoBehaviour
 
     [SerializeField] private GameObject cameraTarget = null;
     [SerializeField] private GameObject cursor = null;
-    [SerializeField] private LayerMask mask;
+    [SerializeField] private LayerMask mask = 0;
 
     public static MouseManager Instance { get; private set; } = null;
     public bool Locked { get; set; } = false;

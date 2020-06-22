@@ -8,7 +8,6 @@ using Object = UnityEngine.Object;
 public class TimeChamber : MonoBehaviour
 {
     public enum TIMELINE { MAGIC, TECH }
-    [SerializeField] private TIMELINE current = TIMELINE.MAGIC;
     [SerializeField] private int turnsRequired = 4;
     [SerializeField] private Image hourglassFill = null;
     private int turnsRemaining = 4;

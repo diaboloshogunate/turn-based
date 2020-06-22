@@ -39,6 +39,10 @@ public class UnitDetails : MonoBehaviour
             elementText = "PLASMA";
         else if(unit.Element.GetElement() == Element.ELEMENT.ELECTRC)
             elementText = "ELECTRIC";
+        else if(unit.Element.GetElement() == Element.ELEMENT.VOID)
+            elementText = "VOID";
+        else if(unit.Element.GetElement() == Element.ELEMENT.NULL)
+            elementText = "NULL";
         
         this.healthFill.fillAmount = unit.Health.GetHealthNormal();
         this.attack.text = unit.Attack.GetAttack().ToString();

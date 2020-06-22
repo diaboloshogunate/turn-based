@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
             this.player2Units.Remove(unit);
             if (this.player2Units.Count == 0)
             {
-                TransitionController.GetInstance().Load("GameOver");
+                TransitionController.GetInstance().Load("YouWin");
             }
         }
 
